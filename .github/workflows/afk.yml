@@ -1,32 +1,29 @@
-name: Aternos AFK Bot Runner
+name: Minecraft NPC Bot 24/7
 
 on:
-  schedule:
-    # Executa a cada 50 minutos (ajuste conforme necessário)
-    - cron: '*/50 * * * *'
-  workflow_dispatch: # Permite iniciar manualmente no GitHub
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Baixar código
-        uses: actions/checkout@v4
+    - name: Clonar repositorio
+      uses: actions/checkout@v4
 
-      - name: Configurar Node.js
-        uses: actions/checkout@v4
-        with:
-          node-version: '18'
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
 
-      - name: Instalar dependências
-        run: npm install
+    - name: Instalar dependencias
+      run: npm install mineflayer
 
-      - name: Executar o Bot AFK
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_PORT: ${{ secrets.SERVER_PORT }}
-          BOT_USERNAME: ${{ secrets.BOT_USERNAME }}
-        # O limite de execução evita que o GitHub Action trave indefinidamente
-        run: timeout 45m node bot.js || true
-        
+    - name: Executar script do NPC
+      env:
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+        SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        BOT_USERNAME: ${{ secrets.BOT_USERNAME }}
+      run: timeout 40m node bot.js || true
+      

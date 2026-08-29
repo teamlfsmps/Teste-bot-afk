@@ -1,0 +1,32 @@
+name: Aternos AFK Bot Runner
+
+on:
+  schedule:
+    # Executa a cada 50 minutos (ajuste conforme necessário)
+    - cron: '*/50 * * * *'
+  workflow_dispatch: # Permite iniciar manualmente no GitHub
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/checkout@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Executar o Bot AFK
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          BOT_USERNAME: ${{ secrets.BOT_USERNAME }}
+        # O limite de execução evita que o GitHub Action trave indefinidamente
+        run: timeout 45m node bot.js || true
+        
